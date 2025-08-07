@@ -126,6 +126,7 @@ export default function LoginPage({
 
   // Initialize state for URL parameters
   const [callbackUrl, setCallbackUrl] = useState('/workspace')
+  const [isFromElectron, setIsFromElectron] = useState(false)
   const [isInviteFlow, setIsInviteFlow] = useState(false)
 
   // Forgot password states
@@ -158,6 +159,10 @@ export default function LoginPage({
           // Keep the default safe value ('/workspace')
         }
       }
+
+      // Check if this login is from Electron
+      const fromElectron = searchParams.get('from') === 'electron'
+      setIsFromElectron(fromElectron)
 
       const inviteFlow = searchParams.get('invite_flow') === 'true'
       setIsInviteFlow(inviteFlow)
@@ -284,10 +289,20 @@ export default function LoginPage({
         return
       }
 
+      // Check if this login is from Electron
+      const isFromElectron = searchParams.get("from") === "electron";
+      
+      // If login is from Electron, redirect to the status page
+      if (isFromElectron) {
+        router.push("/login/redirect-status?from=electron");
+        return; // Prevent default web redirect
+      }
+
       // Mark that the user has previously logged in
-      if (typeof window !== 'undefined') {
-        localStorage.setItem('has_logged_in_before', 'true')
-        document.cookie = 'has_logged_in_before=true; path=/; max-age=31536000; SameSite=Lax' // 1 year expiry
+      if (typeof window !== "undefined") {
+        localStorage.setItem("has_logged_in_before", "true");
+        document.cookie =
+          "has_logged_in_before=true; path=/; max-age=31536000; SameSite=Lax"; // 1 year expiry
       }
     } catch (err: any) {
       // Handle only the special verification case that requires a redirect
@@ -383,6 +398,7 @@ export default function LoginPage({
             githubAvailable={githubAvailable}
             isProduction={isProduction}
             callbackURL={callbackUrl}
+            isFromElectron={isFromElectron}
           />
 
           <div className='relative mt-2 py-4'>

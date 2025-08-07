@@ -11,6 +11,7 @@ interface SocialLoginButtonsProps {
   googleAvailable: boolean
   callbackURL?: string
   isProduction: boolean
+  isFromElectron?: boolean
 }
 
 export function SocialLoginButtons({
@@ -18,6 +19,7 @@ export function SocialLoginButtons({
   googleAvailable,
   callbackURL = '/workspace',
   isProduction,
+  isFromElectron = false,
 }: SocialLoginButtonsProps) {
   const [isGithubLoading, setIsGithubLoading] = useState(false)
   const [isGoogleLoading, setIsGoogleLoading] = useState(false)
@@ -36,7 +38,12 @@ export function SocialLoginButtons({
 
     setIsGithubLoading(true)
     try {
-      await client.signIn.social({ provider: 'github', callbackURL })
+      // If login is from Electron, redirect to the status page
+      const finalCallbackURL = isFromElectron 
+        ? `/login/redirect-status?from=electron` 
+        : callbackURL;
+      
+      await client.signIn.social({ provider: 'github', callbackURL: finalCallbackURL })
 
       // Mark that the user has previously logged in
       if (typeof window !== 'undefined') {
@@ -65,7 +72,12 @@ export function SocialLoginButtons({
 
     setIsGoogleLoading(true)
     try {
-      await client.signIn.social({ provider: 'google', callbackURL })
+      // If login is from Electron, redirect to the status page
+      const finalCallbackURL = isFromElectron 
+        ? `/login/redirect-status?from=electron` 
+        : callbackURL;
+      
+      await client.signIn.social({ provider: 'google', callbackURL: finalCallbackURL })
 
       // Mark that the user has previously logged in
       if (typeof window !== 'undefined') {
