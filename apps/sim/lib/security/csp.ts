@@ -106,7 +106,7 @@ export const buildTimeCSPDirectives: CSPDirectives = {
     'https://*.google.com',
   ],
 
-  'frame-ancestors': ["'self'"],
+  'frame-ancestors': ["'self'", 'http://localhost:*', 'https://localhost:*', 'app://ternary'],
   'form-action': ["'self'"],
   'base-uri': ["'self'"],
   'object-src': ["'none'"],
@@ -148,7 +148,7 @@ export function generateRuntimeCSP(): string {
     font-src 'self' https://fonts.gstatic.com;
     connect-src 'self' ${appUrl} ${ollamaUrl} ${socketUrl} ${socketWsUrl} https://*.up.railway.app wss://*.up.railway.app https://api.browser-use.com https://api.exa.ai https://api.firecrawl.dev https://*.googleapis.com https://*.amazonaws.com https://*.s3.amazonaws.com https://*.blob.core.windows.net https://*.vercel-insights.com https://vitals.vercel-insights.com https://*.atlassian.com https://*.supabase.co https://vercel.live https://*.vercel.live https://vercel.com https://*.vercel.app wss://*.vercel.app https://pro.ip-api.com;
     frame-src https://drive.google.com https://docs.google.com https://*.google.com;
-    frame-ancestors 'self';
+    frame-ancestors 'self' http://localhost:* https://localhost:* app://ternary;
     form-action 'self';
     base-uri 'self';
     object-src 'none';
