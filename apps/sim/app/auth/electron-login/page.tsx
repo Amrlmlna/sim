@@ -28,7 +28,7 @@ export default function ElectronLoginPage() {
 
         // Set the authentication cookies using document.cookie
         // Note: We can only set non-httpOnly cookies from client-side
-        const cookieOptions = 'path=/; SameSite=Lax'
+        const cookieOptions = 'path=/; SameSite=None; Secure'
         
         // Set session token cookie
         document.cookie = `better-auth.session_token=${sessionToken}; ${cookieOptions}`
