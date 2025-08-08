@@ -1,61 +1,60 @@
-'use client'
+"use client";
 
-import { useEffect } from 'react'
-import { useSearchParams, useRouter } from 'next/navigation'
-import { createLogger } from '@/lib/logs/console/logger'
+import { useEffect } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
+import { createLogger } from "@/lib/logs/console/logger";
 
-const logger = createLogger('ElectronLogin')
+const logger = createLogger("ElectronLogin");
 
 export default function ElectronLoginPage() {
-  const searchParams = useSearchParams()
-  const router = useRouter()
+  const searchParams = useSearchParams();
+  const router = useRouter();
 
   useEffect(() => {
     const handleElectronLogin = async () => {
-      const sessionToken = searchParams.get('session_token')
-      const sessionData = searchParams.get('session_data')
-      const hasLoggedInBefore = searchParams.get('has_logged_in_before')
-      const from = searchParams.get('from')
+      const sessionToken = searchParams.get("session_token");
+      const sessionData = searchParams.get("session_data");
+      const hasLoggedInBefore = searchParams.get("has_logged_in_before");
+      const from = searchParams.get("from");
 
-      if (from !== 'electron' || !sessionToken || !sessionData) {
-        logger.error('Invalid electron login parameters')
-        router.push('/login')
-        return
+      if (from !== "electron" || !sessionToken || !sessionData) {
+        logger.error("Invalid electron login parameters");
+        router.push("/login");
+        return;
       }
 
       try {
-        logger.info('Setting authentication cookies from Electron data')
+        logger.info("Setting authentication cookies from Electron data");
 
         // Set the authentication cookies using document.cookie
         // Note: We can only set non-httpOnly cookies from client-side
-        const cookieOptions = 'path=/; SameSite=None; Secure'
-        
+        const cookieOptions = "path=/; SameSite=None; Secure";
+
         // Set session token cookie
-        document.cookie = `better-auth.session_token=${sessionToken}; ${cookieOptions}`
-        
-        // Set session data cookie  
-        document.cookie = `better-auth.session_data=${sessionData}; ${cookieOptions}`
-        
+        document.cookie = `__Secure-better-auth.session_token=${sessionToken}; ${cookieOptions}`;
+
+        // Set session data cookie
+        document.cookie = `__Secure-better-auth.session_data=${sessionData}; ${cookieOptions}`;
+
         // Set has_logged_in_before if provided
         if (hasLoggedInBefore) {
-          document.cookie = `has_logged_in_before=${hasLoggedInBefore}; ${cookieOptions}`
+          document.cookie = `has_logged_in_before=${hasLoggedInBefore}; ${cookieOptions}`;
         }
 
-        logger.info('Cookies set successfully, redirecting to workspace')
-        
+        logger.info("Cookies set successfully, redirecting to workspace");
+
         // Small delay to ensure cookies are set before redirect
         setTimeout(() => {
-          router.push('/workspace')
-        }, 100)
-
+          router.push("/workspace");
+        }, 100);
       } catch (error) {
-        logger.error('Failed to set authentication cookies:', error)
-        router.push('/login')
+        logger.error("Failed to set authentication cookies:", error);
+        router.push("/login");
       }
-    }
+    };
 
-    handleElectronLogin()
-  }, [searchParams, router])
+    handleElectronLogin();
+  }, [searchParams, router]);
 
   return (
     <div className="flex items-center justify-center min-h-screen">
@@ -64,5 +63,5 @@ export default function ElectronLoginPage() {
         <p className="text-gray-600">Setting up your session...</p>
       </div>
     </div>
-  )
+  );
 }
